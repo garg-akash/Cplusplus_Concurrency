@@ -13,17 +13,11 @@ double sqroot(int x)
 int main(int argc, char const *argv[])
 {
 	std::cout << "main thread : " << std::this_thread::get_id() << "\n";
-	std::promise<double> pro;
-	try
-	{
-		pro.set_value(sqroot(4));
-	}
-	catch(...)
-	{
-		pro.set_exception(std::current_exception());
-	}
-	
-	std::future<double> fut = pro.get_future();
+	std::promise<double>* pro = new std::promise<double>;
+
+	pro->set_value(sqroot(4));
+	delete pro; // deleting the promise throws future_error
+	std::future<double> fut = pro->get_future();
 	
 	// std::future<double> fut = std::async(sqroot,-4); // this sets the exception automatically
 
